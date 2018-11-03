@@ -269,4 +269,35 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         return false;
     }
+    private void saveData() {
+        //put badass code here.
+        //save the data to a .csv file when clicked
+        try{
+            String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+
+            PrintWriter pw = new PrintWriter(new File(baseDir + File.separator + "test.csv"));
+            Log.d(LOG_TAG, baseDir + File.separator + "test.csv");
+            pw.write("Time,Latitude,Longitude\n");
+            pw.close();
+
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(baseDir+File.separator+"test.csv"));
+            Log.d(LOG_TAG, bufferedReader.readLine()); //can remove later, just don't have a device to check this on
+
+
+        }catch(Exception e){
+            Log.e(LOG_TAG, e.getMessage()); //this is where i'm stuck I can't get permission
+        }
+        //need to get PC to see new file
+        //MediaScannerConnection.scanFile(MainActivity.this, new String[] {filePathWrite.toString()}, null, null);
+
+        //speed & time
+
+        //xAccel & time
+
+        //yAccel & time
+
+        //zAccel & time
+    }
+
 }

@@ -123,6 +123,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager.registerListener(this, linearAccel, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_savedata : saveData(); break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     //update UI
     public void updateUI(float speed) {
         //get the textviews

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Power</string>
+    <string name="menu_save">Save Data</string>
 </resources>

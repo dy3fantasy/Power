@@ -11,22 +11,40 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaScannerConnection;
+
 import android.os.Build;
 import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -105,6 +123,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager.registerListener(this, linearAccel, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_savedata : saveData(); break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     //update UI
     public void updateUI(float speed) {
         //get the textviews
@@ -132,10 +168,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void askForPermissions() {
 
         int GPSPermission = this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-        Log.d(LOG_TAG, "before: " + GPSPermission + "");
+        Log.d(LOG_TAG, "beforeGPS: " + GPSPermission + "");
 
-        if(GPSPermission != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 20);
+        int readExtPermission = this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        int writeExtPermission = this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        Log.d(LOG_TAG, "beforeREAD: " + readExtPermission + "");
+        Log.d(LOG_TAG, "beforeWRITE: " + writeExtPermission + "");
+
+
+        if(GPSPermission != PackageManager.PERMISSION_GRANTED && readExtPermission != PackageManager.PERMISSION_GRANTED && writeExtPermission != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
 
         GPSPermission = this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         Log.d(LOG_TAG, "after: " + GPSPermission + "");
@@ -227,4 +269,35 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         return false;
     }
+    private void saveData() {
+        //put badass code here.
+        //save the data to a .csv file when clicked
+        try{
+            String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+
+            PrintWriter pw = new PrintWriter(new File(baseDir + File.separator + "test.csv"));
+            Log.d(LOG_TAG, baseDir + File.separator + "test.csv");
+            pw.write("Time,Latitude,Longitude\n");
+            pw.close();
+
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(baseDir+File.separator+"test.csv"));
+            Log.d(LOG_TAG, bufferedReader.readLine()); //can remove later, just don't have a device to check this on
+
+
+        }catch(Exception e){
+            Log.e(LOG_TAG, e.getMessage()); //this is where i'm stuck I can't get permission
+        }
+        //need to get PC to see new file
+        //MediaScannerConnection.scanFile(MainActivity.this, new String[] {filePathWrite.toString()}, null, null);
+
+        //speed & time
+
+        //xAccel & time
+
+        //yAccel & time
+
+        //zAccel & time
+    }
+
 }

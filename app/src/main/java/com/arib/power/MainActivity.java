@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, "beforeWRITE: " + writeExtPermission + "");
 
 
-        if(GPSPermission != PackageManager.PERMISSION_GRANTED && readExtPermission != PackageManager.PERMISSION_GRANTED && writeExtPermission != PackageManager.PERMISSION_GRANTED)
+        if(GPSPermission != PackageManager.PERMISSION_GRANTED || readExtPermission != PackageManager.PERMISSION_GRANTED || writeExtPermission != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 20);
 
         GPSPermission = this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -277,27 +277,48 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             PrintWriter pw = new PrintWriter(new File(baseDir + File.separator + "test.csv"));
             Log.d(LOG_TAG, baseDir + File.separator + "test.csv");
-            pw.write("Time,Latitude,Longitude\n");
+
+            //do these all in different sections... time,xAccel.... time,yAccel.... time, zAccell
+
+            pw.write("Time,Speed\n");
+            parseLogger(pw, logger, "speed");
+            pw.write("Time,xAccel\n");
+            parseLogger(pw, logger, "xAccel");
+            pw.write("Time, yAccel\n");
+            parseLogger(pw, logger, "yAccel");
+            pw.write("Time, zAccel\n");
+            parseLogger(pw, logger, "zAccel");
             pw.close();
 
 
             BufferedReader bufferedReader = new BufferedReader(new FileReader(baseDir+File.separator+"test.csv"));
-            Log.d(LOG_TAG, bufferedReader.readLine()); //can remove later, just don't have a device to check this on
+            //while not EOF
+            //Log.d(LOG_TAG, bufferedReader.readLine());
+            Log.d(LOG_TAG, bufferedReader.readLine());
+            String line = "";
+            while ( (line=bufferedReader.readLine())!= null ) {
+                Log.d(LOG_TAG, line); //can remove later, just don't have a device to check this on
+            }
 
 
         }catch(Exception e){
             Log.e(LOG_TAG, e.getMessage()); //this is where i'm stuck I can't get permission
         }
-        //need to get PC to see new file
-        //MediaScannerConnection.scanFile(MainActivity.this, new String[] {filePathWrite.toString()}, null, null);
 
-        //speed & time
+    }
+    private void parseLogger(PrintWriter pw2, ArrayList<Value> log, String type2){
+        //this function does not include header
+        for(int i=0; i< log.size(); i++)
+        {
+            if (log.get(i).getType() == type2 )
+            {
+                double val = log.get(i).getValue();
+                long tim = log.get(i).getTime();
+                pw2.write(val+","+tim+"\n");
+            }
+        }
+        pw2.write("END\n\n");
 
-        //xAccel & time
-
-        //yAccel & time
-
-        //zAccel & time
     }
 
 }

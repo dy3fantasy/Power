@@ -270,16 +270,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return false;
     }
     private void saveData() {
-        //put badass code here.
         //save the data to a .csv file when clicked
         try{
+            //get path to base directory
             String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
 
             PrintWriter pw = new PrintWriter(new File(baseDir + File.separator + "test.csv"));
             Log.d(LOG_TAG, baseDir + File.separator + "test.csv");
 
-            //do these all in different sections... time,xAccel.... time,yAccel.... time, zAccell
-
+            //write to csv file in the following sections time,speed.... time,xAccel.... time,yAccel.... time, zAccell
             pw.write("Time,Speed\n");
             parseLogger(pw, logger, "speed");
             pw.write("Time,xAccel\n");
@@ -290,24 +289,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             parseLogger(pw, logger, "zAccel");
             pw.close();
 
-
+            //read from csv file
             BufferedReader bufferedReader = new BufferedReader(new FileReader(baseDir+File.separator+"test.csv"));
-            //while not EOF
-            //Log.d(LOG_TAG, bufferedReader.readLine());
             Log.d(LOG_TAG, bufferedReader.readLine());
             String line = "";
+            //while not EOF
             while ( (line=bufferedReader.readLine())!= null ) {
                 Log.d(LOG_TAG, line); //can remove later, just don't have a device to check this on
             }
 
 
         }catch(Exception e){
-            Log.e(LOG_TAG, e.getMessage()); //this is where i'm stuck I can't get permission
+            Log.e(LOG_TAG, e.getMessage());
         }
 
     }
     private void parseLogger(PrintWriter pw2, ArrayList<Value> log, String type2){
         //this function does not include header
+        //write information to csv file for values in logger that are of type2
         for(int i=0; i< log.size(); i++)
         {
             if (log.get(i).getType() == type2 )
@@ -317,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 pw2.write(val+","+tim+"\n");
             }
         }
-        pw2.write("END\n\n");
+        pw2.write("END\n\n"); //end each section with end
 
     }
 

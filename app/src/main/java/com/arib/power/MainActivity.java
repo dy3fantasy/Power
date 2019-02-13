@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             logger.add(new Value("speed", speed, currTime - startTime));
         }
         //get the topspeed by parsing it from its textview
-        int topSpeed = Integer.parseInt(topSpeedView.getText().toString());
+        int topSpeed = (int)Double.parseDouble(topSpeedView.getText().toString());
 
         //if current speed is faster than current recorded top speed update topspeed textview
         if(speed > topSpeed) {
@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         return false;
     }
+
     private void saveData() {
         //save the data to a .csv file when clicked
         try{
@@ -278,14 +279,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             PrintWriter pw = new PrintWriter(new File(baseDir + File.separator + "test.csv"));
             Log.d(LOG_TAG, baseDir + File.separator + "test.csv");
 
-            //write to csv file in the following sections time,speed.... time,xAccel.... time,yAccel.... time, zAccell
-            pw.write("Time,Speed\n");
+            //write to csv file in the following sections time,speed.... time,xAccel.... time,yAccel.... time, zAccel
+            pw.write("Time,speed\n");
             parseLogger(pw, logger, "speed");
             pw.write("Time,xAccel\n");
             parseLogger(pw, logger, "xAccel");
-            pw.write("Time, yAccel\n");
+            pw.write("Time,yAccel\n");
             parseLogger(pw, logger, "yAccel");
-            pw.write("Time, zAccel\n");
+            pw.write("Time,zAccel\n");
             parseLogger(pw, logger, "zAccel");
             pw.close();
 
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             {
                 double val = log.get(i).getValue();
                 long tim = log.get(i).getTime();
-                pw2.write(val+","+tim+"\n");
+                pw2.write(tim+","+val+"\n");
             }
         }
         pw2.write("END\n\n"); //end each section with end

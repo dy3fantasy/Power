@@ -85,6 +85,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 speed *= 2.23694;
                 //update the UI
                 updateUI(speed);
+
+                //get the latitude and longitude from the location object
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                long currTime = System.currentTimeMillis();
+
+                // add latitude and longitude to logger
+                if(currTime - startTime > 500) {
+                    logger.add(new Value("latitude", latitude, currTime-startTime));
+                    logger.add(new Value("longitude", longitude, currTime - startTime));
+                }
+
+
             }
 
 
@@ -288,6 +302,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             parseLogger(pw, logger, "yAccel");
             pw.write("Time,zAccel\n");
             parseLogger(pw, logger, "zAccel");
+            //write long lat to csv file
+            pw.write("Time,latitude\n");
+            parseLogger(pw, logger, "latitude");
+            pw.write("Time,longitude\n");
+            parseLogger(pw, logger, "longitude");
             pw.close();
 
             //read from csv file

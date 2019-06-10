@@ -11,6 +11,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.widget.Chronometer;
 import android.media.MediaScannerConnection;
 
 import android.os.Build;
@@ -77,14 +78,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //set the location listener
         locListener = new LocationListener() {
+            //create booleans to create flags for if 30, 45, or 60 has been reached, resets when speed = 0
+            private boolean first30 = false;
+            private boolean first45 = false;
+            private boolean first60 = false;
+            //stores start time of when speed reaches zero
+            private long zeroStart = 0;
             @Override
             public void onLocationChanged(Location location) {
                 //get the calculated speed from the location object
                 float speed = location.getSpeed();
                 //convert from m/s to mph
                 speed *= 2.23694;
+
                 //update the UI
-                updateUI(speed);
+                updateUI(speed, first30, first45, first60, zeroStart);
 
                 //get the latitude and longitude from the location object
                 double latitude = location.getLatitude();
@@ -156,7 +164,118 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     //update UI
-    public void updateUI(float speed) {
+    public void updateUI(float speed, boolean first30, boolean first45, boolean first60, long zeroStart) {
+        updateSpeed(speed);
+        updateBoxes(speed, first30, first45, first60, zeroStart);
+    }
+
+    //update 0-30, 0-45, 0-60 boxes
+    public void updateBoxes(float speed, boolean first30, boolean first45, boolean first60, long zeroStart) {
+        //get the textviews
+        Chronometer thirtyView = (Chronometer) findViewById(R.id.zeroThirty);
+        Chronometer fortyfiveView = (Chronometer) findViewById(R.id.zeroFortyfive);
+        Chronometer sixtyView = (Chronometer) findViewById(R.id.zeroSixty);
+        TextView top30 = (TextView) findViewById(R.id.topZero30);
+        TextView top45 = (TextView) findViewById(R.id.topZero45);
+        TextView top60 = (TextView) findViewById(R.id.topZero60);
+        //variable to long millis for when car reaches certain speeds
+
+        if(speed == 30){
+            //set flag
+            first30 = true;
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //get the best by parsing it from its textview
+            long best30 = (long)Long.parseLong(top30.getText().toString());
+
+            //compare timer times
+            if((end-zeroStart) < best30){
+                //update bestTime
+                top30.setText((end-zeroStart) + "");
+            }
+
+        }else if(speed == 45){
+            //set flag
+            first45 = true;
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //get the best by parsing it from its textview
+            long best45 = (long)Long.parseLong(top45.getText().toString());
+
+            //compare timer times
+            if((end-zeroStart) < best45){
+                //update bestTime
+                top45.setText((end-zeroStart) + "");
+            }
+
+        }else if(speed == 60){
+            //set flag
+            first60 = true;
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //get the best by parsing it from its textview
+            long best60 = (long)Long.parseLong(top60.getText().toString());
+
+            //compare timer times
+            if((end-zeroStart) < best60){
+                //update bestTime
+                top60.setText((end-zeroStart) + "");
+            }
+
+        //if speed = 0 display "READY!" in *all* textviews
+        }else if(speed == 0){
+            //reset flags once speed = 60
+            first30 = false;
+            first45 = false;
+            first60 = false;
+            //update textviews
+            thirtyView.setText("READY!");
+            fortyfiveView.setText("READY!");
+            sixtyView.setText("READY!");
+            //get zeroStart time here
+            zeroStart = System.currentTimeMillis();
+        }
+        if(speed < 30 && speed > 0 && first30 == false){
+            //continuously update 30 timer box
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //update timer
+            thirtyView.setText((end-zeroStart)/1000.0 + "");
+
+        }
+        if(speed < 45 && speed > 0 && first45 == false){
+            //continuously update 45 timer box
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //update timer
+            fortyfiveView.setText((end-zeroStart)/1000.0 + "");
+
+        }
+        if(speed < 60 && speed > 0 && first60 == false){
+            //continuously update 60 timer box
+
+            //variable to long millis for when car reaches certain speeds
+            long end = System.currentTimeMillis();
+
+            //update timer
+            sixtyView.setText((end-zeroStart)/1000.0 + "");
+
+
+        }
+    }
+
+    //update speed
+    public void updateSpeed(float speed) {
         //get the textviews
         TextView speedView = (TextView) findViewById(R.id.speed);
         TextView topSpeedView = (TextView) findViewById(R.id.topSpeed);
@@ -220,17 +339,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             logger.add(new Value("zAccel", zAccel, currTime - startTime));
         }
 
+        //*** %250 updates like every couple seconds
+        //*** %2.5 looks better, around four changes a second.. why why why?
+        if((currTime - startTime) > 500) {
+            //Get the textViews for the current acceleration values
+            TextView xView = (TextView) findViewById(R.id.xAccel);
+            TextView yView = (TextView) findViewById(R.id.yAccel);
+            TextView zView = (TextView) findViewById(R.id.zAccel);
 
-
-        //Get the textViews for the current acceleration values
-        TextView xView = (TextView) findViewById(R.id.xAccel);
-        TextView yView = (TextView) findViewById(R.id.yAccel);
-        TextView zView = (TextView) findViewById(R.id.zAccel);
-
-        //set the acceleration values to the textviews
-        xView.setText(formatter.format(xAccel) + "");
-        yView.setText(formatter.format(yAccel) + "");
-        zView.setText(formatter.format(zAccel) + "");
+            //set the acceleration values to the textviews
+            xView.setText(formatter.format(xAccel) + "");
+            yView.setText(formatter.format(yAccel) + "");
+            zView.setText(formatter.format(zAccel) + "");
+        }
 
 
         //get the textviews for the peak acceleration values

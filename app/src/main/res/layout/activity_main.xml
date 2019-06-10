@@ -120,5 +120,134 @@
         android:text="PeakZAccel:"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/zTlabel"
+        android:layout_width="130dp"
+        android:layout_height="15dp"
+        android:layout_marginRight="10px"
+        android:layout_marginLeft="10px"
+        android:layout_above="@+id/zeroThirty"
+        android:text="0-30"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/zFFlabel"
+        android:layout_width="130dp"
+        android:layout_height="15dp"
+        android:layout_toRightOf="@id/zTlabel"
+        android:layout_marginRight="10px"
+        android:layout_above="@+id/zeroFortyfive"
+        android:text="0-45"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/zSlabel"
+        android:layout_width="130dp"
+        android:layout_height="15dp"
+        android:layout_toRightOf="@id/zFFlabel"
+        android:layout_marginRight="10px"
+        android:layout_above="@+id/zeroSixty"
+        android:text="0-60"
+        android:textAlignment="center" />
+
+    <Chronometer
+        android:id="@+id/zeroThirty"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="10px"
+        android:layout_marginLeft="10px"
+        android:layout_above="@+id/bestTime1"
+        android:text="READY"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <Chronometer
+        android:id="@+id/zeroFortyfive"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/zeroThirty"
+        android:layout_marginRight="10px"
+        android:layout_above="@+id/bestTime2"
+        android:text="READY!"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <Chronometer
+        android:id="@+id/zeroSixty"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/zeroFortyfive"
+        android:layout_marginRight="10px"
+        android:layout_above="@+id/bestTime3"
+        android:text="READY!"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/bestTime1"
+        android:layout_width="130dp"
+        android:layout_height="24dp"
+        android:layout_above="@+id/topZero30"
+        android:layout_marginLeft="10px"
+        android:layout_marginRight="10px"
+        android:text="Best Time"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/bestTime2"
+        android:layout_width="130dp"
+        android:layout_height="24dp"
+        android:layout_above="@+id/topZero45"
+        android:layout_toRightOf="@id/bestTime1"
+        android:layout_marginRight="10px"
+        android:text="Best Time"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/bestTime3"
+        android:layout_width="130dp"
+        android:layout_height="24dp"
+        android:layout_above="@+id/topZero60"
+        android:layout_toRightOf="@id/bestTime2"
+        android:layout_marginRight="10px"
+        android:text="Best Time"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/topZero30"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="10px"
+        android:layout_marginLeft="10px"
+        android:text="-1"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/topZero45"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:layout_toRightOf="@id/topZero30"
+        android:layout_marginRight="10px"
+        android:text="-1"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/topZero60"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:layout_toRightOf="@id/topZero45"
+        android:layout_marginRight="10px"
+        android:text="-1"
+        android:textAlignment="center" />
+
 
 </RelativeLayout>

@@ -8,6 +8,7 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:paddingEnd="5dp"
+    android:background="@android:color/black"
     tools:context="com.arib.power.MainActivity">
 
     <TextView
@@ -16,17 +17,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="-1"
+        android:textColor="#FFFFFF"
         android:textSize="75sp" />
 
     <TextView
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/speed"
         android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="mph"
-        android:textSize="20sp"
-        android:id="@+id/textView7" />
+        android:textColor="#9a9d9e"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/xAccel"
@@ -34,7 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="X"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
     <TextView
@@ -42,8 +49,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:layout_alignTop="@+id/xAccel"
         android:text="0"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -51,8 +60,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:layout_below="@+id/peakXAccel"
         android:text="0"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -60,8 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:layout_below="@+id/peakYAccel"
         android:text="0"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -69,8 +82,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:layout_below="@+id/xAccel"
         android:text="Y"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
     <TextView
@@ -78,8 +93,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:fontFamily="sans-serif-condensed-light"
         android:layout_below="@+id/yAccel"
         android:text="Z"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
     <TextView
@@ -88,6 +105,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView7"
         android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textColor="#9a9d9e"
         android:text="0" />
 
     <TextView
@@ -97,7 +116,9 @@
         android:layout_alignTop="@+id/peakXAccel"
         android:layout_toStartOf="@+id/peakXAccel"
         android:layout_marginEnd="10dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="PeakXAccel:"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -107,7 +128,9 @@
         android:layout_below="@+id/peakXAccel"
         android:layout_toStartOf="@+id/peakXAccel"
         android:layout_marginEnd="10dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="PeakYAccel:"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -117,7 +140,9 @@
         android:layout_below="@+id/peakYAccel"
         android:layout_toStartOf="@+id/peakYAccel"
         android:layout_marginEnd="10dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="PeakZAccel:"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -127,7 +152,9 @@
         android:layout_marginRight="10px"
         android:layout_marginLeft="10px"
         android:layout_above="@+id/zeroThirty"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="0-30"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
     <TextView
@@ -137,7 +164,9 @@
         android:layout_toRightOf="@id/zTlabel"
         android:layout_marginRight="10px"
         android:layout_above="@+id/zeroFortyfive"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="0-45"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
     <TextView
@@ -147,40 +176,48 @@
         android:layout_toRightOf="@id/zFFlabel"
         android:layout_marginRight="10px"
         android:layout_above="@+id/zeroSixty"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="0-60"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
-    <Chronometer
+    <TextView
         android:id="@+id/zeroThirty"
         android:layout_width="130dp"
         android:layout_height="40dp"
         android:layout_marginRight="10px"
         android:layout_marginLeft="10px"
         android:layout_above="@+id/bestTime1"
-        android:text="READY"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="READY!"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="30sp" />
 
-    <Chronometer
+    <TextView
         android:id="@+id/zeroFortyfive"
         android:layout_width="130dp"
         android:layout_height="40dp"
         android:layout_toRightOf="@id/zeroThirty"
         android:layout_marginRight="10px"
         android:layout_above="@+id/bestTime2"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="READY!"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="30sp" />
 
-    <Chronometer
+    <TextView
         android:id="@+id/zeroSixty"
         android:layout_width="130dp"
         android:layout_height="40dp"
         android:layout_toRightOf="@id/zeroFortyfive"
         android:layout_marginRight="10px"
         android:layout_above="@+id/bestTime3"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="READY!"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="30sp" />
 
     <TextView
@@ -190,8 +227,10 @@
         android:layout_above="@+id/topZero30"
         android:layout_marginLeft="10px"
         android:layout_marginRight="10px"
-        android:text="Best Time"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="ms"
         android:textAlignment="center"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -201,8 +240,10 @@
         android:layout_above="@+id/topZero45"
         android:layout_toRightOf="@id/bestTime1"
         android:layout_marginRight="10px"
-        android:text="Best Time"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="ms"
         android:textAlignment="center"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -212,8 +253,10 @@
         android:layout_above="@+id/topZero60"
         android:layout_toRightOf="@id/bestTime2"
         android:layout_marginRight="10px"
-        android:text="Best Time"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="ms"
         android:textAlignment="center"
+        android:textColor="#9a9d9e"
         android:textSize="20sp" />
 
     <TextView
@@ -224,7 +267,9 @@
         android:layout_marginBottom="2dp"
         android:layout_marginRight="10px"
         android:layout_marginLeft="10px"
-        android:text="-1"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="9999999"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
     <TextView
@@ -235,7 +280,9 @@
         android:layout_marginBottom="2dp"
         android:layout_toRightOf="@id/topZero30"
         android:layout_marginRight="10px"
-        android:text="-1"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="9999999"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
     <TextView
@@ -246,7 +293,9 @@
         android:layout_marginBottom="2dp"
         android:layout_toRightOf="@id/topZero45"
         android:layout_marginRight="10px"
-        android:text="-1"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="9999999"
+        android:textColor="#9a9d9e"
         android:textAlignment="center" />
 
 

@@ -60,8 +60,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //LOGTAG
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    //holds the starttime. Used to find the time the data was logged.
+    //holds constant starttime. Used to find the time the data was logged.
     private long startTime;
+    //holds temporary start time
+    private long pseudoStartTimeSensor = 0;
+    //sensor and location will both need separate variables
+    private long pseudoStartTimeLocation = 0;
 
     private ArrayList<Value> logger;
 
@@ -79,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //set the location listener
         locListener = new LocationListener() {
             //create booleans to create flags for if 30, 45, or 60 has been reached, resets when speed = 0
-            private boolean first30 = false;
-            private boolean first45 = false;
-            private boolean first60 = false;
-            //stores start time of when speed reaches zero
-            private long zeroStart = 0;
+            private boolean hit30 = true;
+            private boolean hit45 = true;
+            private boolean hit60 = true;
+            //create integer to detect if this is the first time the car has his a certain mph milestone since it was 0mph
+            int sameRoundFlag = 0;
             @Override
             public void onLocationChanged(Location location) {
                 //get the calculated speed from the location object
@@ -92,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 speed *= 2.23694;
 
                 //update the UI
-                updateUI(speed, first30, first45, first60, zeroStart);
+                updateSpeed(speed);
+                updateBoxes(speed);
 
                 //get the latitude and longitude from the location object
                 double latitude = location.getLatitude();
@@ -124,6 +129,116 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onProviderDisabled(String s) {
                 Toast.makeText(MainActivity.this, "GPS LOST", Toast.LENGTH_LONG).show();
+            }
+
+            private void flagger(float speed){
+                //get the textviews
+                TextView thirtyView = (TextView) findViewById(R.id.zeroThirty);
+                TextView fortyfiveView = (TextView) findViewById(R.id.zeroFortyfive);
+                TextView sixtyView = (TextView) findViewById(R.id.zeroSixty);
+                TextView top30 = (TextView) findViewById(R.id.topZero30);
+                TextView top45 = (TextView) findViewById(R.id.topZero45);
+                TextView top60 = (TextView) findViewById(R.id.topZero60);
+
+                //set stop flag to true if speed has been equal to special mph and it is the first time it has happened in the round
+                if(speed > 30 && sameRoundFlag == 0){
+                    //set stop flag to true
+                    hit30 = true;
+
+                    //temp variable to hold new time
+                    long temp = (long)Long.parseLong(thirtyView.getText().toString());
+
+                    if ( temp < (long)Long.parseLong(top30.getText().toString()) ){
+                        top30.setText( temp + "");
+                    }
+
+                    sameRoundFlag = 30;
+                }
+                if(speed > 45 && sameRoundFlag == 30){
+                    hit45 = true;
+
+                    //temp variable to hold new time
+                    long temp = (long)Long.parseLong(fortyfiveView.getText().toString());
+
+                    if ( temp < (long)Long.parseLong(top45.getText().toString()) ){
+                        top45.setText( temp + "");
+                    }
+
+                    sameRoundFlag = 45;
+                }
+                if(speed > 60 && sameRoundFlag == 45){
+                    hit60 = true;
+
+                    //temp variable to hold new time
+                    long temp = (long)Long.parseLong(sixtyView.getText().toString());
+
+                    if ( temp < (long)Long.parseLong(top60.getText().toString()) ){
+                        top60.setText( temp + "");
+                    }
+
+                    sameRoundFlag = 60;
+                }
+                if(speed == 0){
+                    //update box to say ready
+                    thirtyView.setText("READY!");
+                    fortyfiveView.setText("READY!");
+                    sixtyView.setText("READY!");
+
+                    //set flags ready to start the timer again
+                    hit30 = false;
+                    hit45 = false;
+                    hit60 = false;
+                    sameRoundFlag = 0;
+                }
+
+            }
+
+            //update 0-30, 0-45, 0-60 boxes
+            private void updateBoxes(float speed) {
+                //get the textviews
+                TextView thirtyView = (TextView) findViewById(R.id.zeroThirty);
+                TextView fortyfiveView = (TextView) findViewById(R.id.zeroFortyfive);
+                TextView sixtyView = (TextView) findViewById(R.id.zeroSixty);
+
+                //get currTime
+                long currTime = System.currentTimeMillis();
+
+                //get time elapsed since last check
+                long timeElapsed = getTimeElapsed(currTime,2);
+
+                //if check if first time since a reset (0 mph) ***
+                if(thirtyView.getText().toString() == "READY!" && speed > 0){
+                    //set flags equal to false
+                    hit30 = false;
+                    hit45 = false;
+                    hit60 = false;
+                    thirtyView.setText("0");
+                    fortyfiveView.setText("0");
+                    sixtyView.setText("0");
+
+                }
+
+                //update boxes every 250ms with current timer
+                if(timeElapsed > 250) {
+                    //if we have not hit time continue doing the stop watch
+
+                    //if we haven't hit a special mph continue stopwatches
+                    //else compare best time
+                    if( hit30 == false ){
+                        stopWatch(30, timeElapsed);
+                    }
+                    if( hit45 == false ){
+                        stopWatch(45, timeElapsed);
+                    }
+                    if( hit60 == false){
+                        stopWatch(60,timeElapsed);
+                    }
+
+                    //update flags
+                    flagger(speed);
+                }
+
+
             }
         };
 
@@ -161,117 +276,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    //update UI
-    public void updateUI(float speed, boolean first30, boolean first45, boolean first60, long zeroStart) {
-        updateSpeed(speed);
-        updateBoxes(speed, first30, first45, first60, zeroStart);
-    }
-
-    //update 0-30, 0-45, 0-60 boxes
-    public void updateBoxes(float speed, boolean first30, boolean first45, boolean first60, long zeroStart) {
-        //get the textviews
-        Chronometer thirtyView = (Chronometer) findViewById(R.id.zeroThirty);
-        Chronometer fortyfiveView = (Chronometer) findViewById(R.id.zeroFortyfive);
-        Chronometer sixtyView = (Chronometer) findViewById(R.id.zeroSixty);
-        TextView top30 = (TextView) findViewById(R.id.topZero30);
-        TextView top45 = (TextView) findViewById(R.id.topZero45);
-        TextView top60 = (TextView) findViewById(R.id.topZero60);
-        //variable to long millis for when car reaches certain speeds
-
-        if(speed == 30){
-            //set flag
-            first30 = true;
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //get the best by parsing it from its textview
-            long best30 = (long)Long.parseLong(top30.getText().toString());
-
-            //compare timer times
-            if((end-zeroStart) < best30){
-                //update bestTime
-                top30.setText((end-zeroStart) + "");
-            }
-
-        }else if(speed == 45){
-            //set flag
-            first45 = true;
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //get the best by parsing it from its textview
-            long best45 = (long)Long.parseLong(top45.getText().toString());
-
-            //compare timer times
-            if((end-zeroStart) < best45){
-                //update bestTime
-                top45.setText((end-zeroStart) + "");
-            }
-
-        }else if(speed == 60){
-            //set flag
-            first60 = true;
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //get the best by parsing it from its textview
-            long best60 = (long)Long.parseLong(top60.getText().toString());
-
-            //compare timer times
-            if((end-zeroStart) < best60){
-                //update bestTime
-                top60.setText((end-zeroStart) + "");
-            }
-
-        //if speed = 0 display "READY!" in *all* textviews
-        }else if(speed == 0){
-            //reset flags once speed = 60
-            first30 = false;
-            first45 = false;
-            first60 = false;
-            //update textviews
-            thirtyView.setText("READY!");
-            fortyfiveView.setText("READY!");
-            sixtyView.setText("READY!");
-            //get zeroStart time here
-            zeroStart = System.currentTimeMillis();
-        }
-        if(speed < 30 && speed > 0 && first30 == false){
-            //continuously update 30 timer box
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //update timer
-            thirtyView.setText((end-zeroStart)/1000.0 + "");
-
-        }
-        if(speed < 45 && speed > 0 && first45 == false){
-            //continuously update 45 timer box
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //update timer
-            fortyfiveView.setText((end-zeroStart)/1000.0 + "");
-
-        }
-        if(speed < 60 && speed > 0 && first60 == false){
-            //continuously update 60 timer box
-
-            //variable to long millis for when car reaches certain speeds
-            long end = System.currentTimeMillis();
-
-            //update timer
-            sixtyView.setText((end-zeroStart)/1000.0 + "");
-
-
-        }
     }
 
     //update speed
@@ -323,7 +327,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        //WIP
 
+        //END WIP
         DecimalFormat formatter = new DecimalFormat("##.###");
 
         //retrieve data from accelerometer
@@ -339,9 +345,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             logger.add(new Value("zAccel", zAccel, currTime - startTime));
         }
 
-        //*** %250 updates like every couple seconds
-        //*** %2.5 looks better, around four changes a second.. why why why?
-        if((currTime - startTime) > 500) {
+        //update every 250ms
+        if(getTimeElapsed(currTime,1) > 250){
             //Get the textViews for the current acceleration values
             TextView xView = (TextView) findViewById(R.id.xAccel);
             TextView yView = (TextView) findViewById(R.id.yAccel);
@@ -352,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             yView.setText(formatter.format(yAccel) + "");
             zView.setText(formatter.format(zAccel) + "");
         }
-
 
         //get the textviews for the peak acceleration values
         TextView peakXView = (TextView) findViewById(R.id.peakXAccel);
@@ -445,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
     }
+
     private void parseLogger(PrintWriter pw2, ArrayList<Value> log, String type2){
         //this function does not include header
         //write information to csv file for values in logger that are of type2
@@ -459,6 +464,81 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         pw2.write("END\n\n"); //end each section with end
 
+    }
+
+    /**
+     * @param currTime don't want to redo declaration
+     * @param flag = 1 if sensor calls, flag = 2 if location calls
+     * @return timeElapse returns time elapsed since last pseudoStartTimeSensor & pseudoStartTimeLocation in ms
+     */
+    private long getTimeElapsed(long currTime, int flag){
+        long timeElapsedSensor = currTime - pseudoStartTimeSensor;
+        long timeElapsedLocation = currTime - pseudoStartTimeLocation;
+        if (timeElapsedSensor > 250 && flag == 1){
+            pseudoStartTimeSensor = currTime;
+            return timeElapsedSensor;
+        }else if(timeElapsedLocation > 250 && flag == 2){
+            pseudoStartTimeLocation = currTime;
+            return timeElapsedLocation;
+        }else {
+            return 0;
+        }
+    }
+
+    //function to update stopWatch textBox for all boxes
+    //updates based on what was originally in the text box + the elapsed time
+    private void stopWatch(int boxNum, long timeElapsed){
+        //get the textviews
+        TextView thirtyView = (TextView) findViewById(R.id.zeroThirty);
+        TextView fortyfiveView = (TextView) findViewById(R.id.zeroFortyfive);
+        TextView sixtyView = (TextView) findViewById(R.id.zeroSixty);
+
+        //make stop watch continue
+        if(boxNum == 30){
+
+            if(!thirtyView.getText().toString().equals("READY!")){//working properly
+                String getString = thirtyView.getText().toString();
+                thirtyView.setText("fsg"); //for some reason if this string isn't here the app crashes???
+                try{
+                    long original = (long) Long.parseLong(getString);
+                    long sum = original + timeElapsed;
+                    thirtyView.setText(sum + "");
+                }catch(NumberFormatException e){
+                    //do something here
+                }
+
+            }
+        }else if(boxNum == 45){
+
+            if(!fortyfiveView.getText().toString().equals("READY!")){//working properly
+                String getString = fortyfiveView.getText().toString();
+                fortyfiveView.setText("fsg");
+                try{
+                    long original = (long) Long.parseLong(getString);
+                    long sum = original + timeElapsed;
+                    fortyfiveView.setText(sum + "");
+                }catch(NumberFormatException e){
+
+                }
+            }
+
+        }else if(boxNum == 60){
+
+            if(!sixtyView.getText().toString().equals("READY!")){//working properly
+                String getString = sixtyView.getText().toString();
+                sixtyView.setText("fsg");
+                try{
+                    long original = (long) Long.parseLong(getString);
+                    long sum = original + timeElapsed;
+                    sixtyView.setText(sum + "");
+                }catch(NumberFormatException e){
+
+                }
+            }
+
+        }else{
+            //wrong box error
+        }
     }
 
 }
